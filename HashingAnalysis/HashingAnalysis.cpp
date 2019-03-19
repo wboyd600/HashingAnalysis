@@ -49,8 +49,9 @@ public:
 		}
 		return -1;
 	}
-	int MidSquareHashing(int key, int size) {
-		// get 4 digit key
+
+	int MidSquareHashing(int key) {
+		// key range between 0-3*table size
 		// fit within 100
 		// take middle two digits
 		long squared = key * key;
@@ -66,19 +67,15 @@ public:
 			down = down / 10;
 			current++;
 		}
-
-		return (down % size);
+		return (down % this->tableSize);
 	}
-
-	vector<Node *> GetPoints() {
+	vector<Node *> GetPointsMidSquare() {
 		vector<Node *> nodes;
 		int range = 3 * this->tableSize;
 		itemsAdded = 0;
-		
 		while (GetLoadFactor(this->itemsAdded, tableSize) < 1.0f) {
-			int random = GetRandom(999);
-			//int hash = KeyModTableSize(random);
-			int hash = MidSquareHashing(random,100);
+			int random = GetRandom(range);
+			int hash = KeyModTableSize(random);
 			Node * g = new Node;
 			itemsAdded++;
 			Element * temp = NULL;
@@ -89,10 +86,42 @@ public:
 					ourElements.push_back(temp);
 				}
 				else {
-					collisions++;
 					temp = ourElements[ind];
 					temp = AddElement(temp, hash);
-					
+					if (GetChainLength(temp) == 2) {
+						collisions++;
+					}
+				}
+			}
+
+			g->collisionCount = collisions;
+			g->loadFactor = GetLoadFactor(itemsAdded, tableSize);
+			nodes.push_back(g);
+		}
+		return nodes;
+	}
+	vector<Node *> GetPointsKeyMod() {
+		vector<Node *> nodes;
+		int range = 3 * this->tableSize;
+		itemsAdded = 0;
+		while (GetLoadFactor(this->itemsAdded, tableSize) < 1.0f) {
+			int random = GetRandom(range);
+			int hash = KeyModTableSize(random);
+			Node * g = new Node;
+			itemsAdded++;
+			Element * temp = NULL;
+			if (hash < tableSize) {
+				int ind = Contains(hash);
+				if (ind == -1) {
+					temp = AddElement(temp, hash);
+					ourElements.push_back(temp);
+				}
+				else {
+					temp = ourElements[ind];
+					temp = AddElement(temp, hash);
+					if (GetChainLength(temp) == 2) {
+						collisions++;
+					}
 				}
 			}
 			
@@ -115,16 +144,27 @@ private:
 	vector<Element *> ourElements;
 };
 
+int GetBitCount(int toCount) {
+	int bitCount = 0;
+	while (toCount > 0) {
+		bitCount = bitCount - (int)pow(2, bitCount);
+		bitCount++;
+	}
+	return bitCount;
+}
 
 int main()
 {
 	// initial table size is 100
-	KeyAnalysis guy(100);
-	vector<Node * > toPrint = guy.GetPoints();
-	for (int i = 0; i < (int) toPrint.size(); i++)
-	{
-		cout << "( " << toPrint[i]->loadFactor << ", " << toPrint[i]->collisionCount << ") ";
-	}
+	int bit = GetBitCount(100);
+	cout << bit;
+	//keyanalysis guy(10);
+	//vector<node * > toprint = guy.getpointskeymod();
+	//for (int i = 0; i < (int) toprint.size(); i++)
+	//{
+	//	cout << "( " << toprint[i]->loadfactor << ", " << toprint[i]->collisioncount << ") ";
+	//}
+
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

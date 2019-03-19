@@ -32,3 +32,17 @@ bool HasNext(Element * head) {
 	}
 	return false;
 }
+int GetChainLength(Element * head) {
+	Element * traverse = head;
+	if (traverse == NULL) {
+		return 0;
+	}
+	else {
+		int count = 1;
+		while (HasNext(head)) {
+			head = head->next;
+			count++;
+		}
+		return count;
+	}
+}
