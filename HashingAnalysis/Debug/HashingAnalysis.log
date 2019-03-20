@@ -1,2 +1,5 @@
 ﻿  HashingAnalysis.cpp
+c:\users\wesley\source\repos\hashinganalysis\hashinganalysis\hashinganalysis.cpp(40): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\wesley\source\repos\hashinganalysis\hashinganalysis\hashinganalysis.cpp(64): warning C4018: '<': signed/unsigned mismatch
+c:\users\wesley\source\repos\hashinganalysis\hashinganalysis\hashinganalysis.cpp(75): warning C4018: '<': signed/unsigned mismatch
   HashingAnalysis.vcxproj -> C:\Users\Wesley\source\repos\HashingAnalysis\Debug\HashingAnalysis.exe
