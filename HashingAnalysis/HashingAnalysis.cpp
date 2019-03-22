@@ -7,6 +7,7 @@
 #include <map>
 #include <time.h> 
 #include "Element.h"
+#include <fstream>
 using namespace std;
 
 // For each hash table size, randomly generate key values between 0 and 3 times the hash table size.
@@ -37,7 +38,7 @@ int GetRandom(int range) {
 int GetBitCount(int toCount) {
 	int bitCount = 0;
 	while (toCount > 0) {
-		toCount = toCount - pow(2.0, (double)bitCount);
+		toCount = toCount - (int) pow(2.0, (double)bitCount);
 		bitCount++;
 	}
 	return bitCount;
@@ -61,7 +62,7 @@ int KeyModTableSize(int key, int tableSize) {
 void AddToVector(int hash, vector<int> &ourElements) {
 	int i = hash + 1;
 	bool added = false;
-	while (i < ourElements.size()) {
+	while (i < (int) ourElements.size()) {
 		if (ourElements[i] != -1) {
 			i++;
 		}
@@ -72,7 +73,7 @@ void AddToVector(int hash, vector<int> &ourElements) {
 	}
 	if (!added) {
 		i = 0;
-		while (i < ourElements.size()) {
+		while (i < (int) ourElements.size()) {
 			if (ourElements[i] != -1) {
 				i++;
 			}
@@ -254,50 +255,137 @@ private:
 
 int main()
 {
-	// initial table size is 100
-	//KeyAnalysisChaining guy(1000);
-	//vector<Node * > toprint = guy.GetPointsKeyMod();
-	//for (int i = 0; i < (int) toprint.size(); i++)
-	//{
-	//	cout << "( " << toprint[i]->loadFactor << ", " << toprint[i]->collisionCount << ") ";
-	//}
-	//cout << "\n";
-	KeyAnalysisChaining chain(97);
-	vector<Node * > chainPrint = chain.GetPointsKeyMod();
-	for (size_t i = 0; i < chainPrint.size(); i++)
+	ofstream fileOut;
+	fileOut.open("HashData.csv");
+
+
+	// First experiment with chaining using Key Mod Hash with sizes 10,50 and 97
+	KeyAnalysisChaining chainKeyMod1(10);
+	fileOut << "Key mod hashing with chaining, \n" << "\n";
+	fileOut << "Current Size = 10, \n";
+	fileOut << "Load Factor, Collision Count, \n";
+	vector<Node * > chainKeyModPrint1 = chainKeyMod1.GetPointsKeyMod();
+	for (size_t i = 0; i < chainKeyModPrint1.size(); i++)
 	{
-		cout << "( " << chainPrint[i]->loadFactor << ", " << chainPrint[i]->collisionCount << ") ";
+		fileOut << chainKeyModPrint1[i]->loadFactor << ", " << chainKeyModPrint1[i]->collisionCount << ", \n";
 	}
-	cout << "\n" << "\n";;
-	KeyAnalysisChaining chain1(97);
-	vector<Node * > chainPrint1 = chain1.GetPointsMidSquare();
-	for (size_t i = 0; i < chainPrint1.size(); i++)
+	fileOut << "\n";
+
+	KeyAnalysisChaining chainKeyMod2(50);
+	fileOut << "Current Size = 50, \n";
+	fileOut << "Load Factor, Collision Count, \n";
+	vector<Node * > chainKeyModPrint2 = chainKeyMod2.GetPointsKeyMod();
+	for (size_t i = 0; i < chainKeyModPrint2.size(); i++)
 	{
-		cout << "( " << chainPrint1[i]->loadFactor << ", " << chainPrint1[i]->collisionCount << ") ";
+		fileOut << chainKeyModPrint2[i]->loadFactor << ", " << chainKeyModPrint2[i]->collisionCount << ", \n";
 	}
-	cout << "\n" << "\n";;
-	KeyAnalysisOpenAdressing guy1(97);
-	vector<Node * > toprint1 = guy1.GetPointsKeyMod();
-	for (int i = 0; i < (int)toprint1.size(); i++)
+	fileOut << "\n";
+
+	KeyAnalysisChaining chainKeyMod3(97);
+	fileOut << "Current Size = 97 (prime), \n";
+	fileOut << "Load Factor, Collision Count, \n";
+	vector<Node * > chainKeyModPrint3 = chainKeyMod3.GetPointsKeyMod();
+	for (size_t i = 0; i < chainKeyModPrint3.size(); i++)
 	{
-		cout << "( " << toprint1[i]->loadFactor << ", " << toprint1[i]->collisionCount << ") ";
+		fileOut << chainKeyModPrint3[i]->loadFactor << ", " << chainKeyModPrint3[i]->collisionCount << ", \n";
 	}
-	cout << "\n" << "\n";;
-	KeyAnalysisOpenAdressing guy(97);
-	vector<Node * > toprint = guy.GetPointsMidSquare();
-	for (int i = 0; i < (int)toprint1.size(); i++)
+	fileOut << "\n";
+
+	// Second experiment with chaining using Mid Square Hashing with sizes 10,50 and 97
+	KeyAnalysisChaining chainMidSquare1(10);
+	fileOut << "Mid Square hashing with chaining, \n" << "\n";
+	fileOut << "Current Size = 10, \n";
+	fileOut << "Load Factor, Collision Count, \n";
+	vector<Node * > chainMidSquarePrint1 = chainMidSquare1.GetPointsMidSquare();
+	for (size_t i = 0; i < chainMidSquarePrint1.size(); i++)
 	{
-		cout << "( " << toprint[i]->loadFactor << ", " << toprint[i]->collisionCount << ") ";
+		fileOut << chainMidSquarePrint1[i]->loadFactor << ", " << chainMidSquarePrint1[i]->collisionCount << ", \n";
 	}
+	fileOut << "\n";
+
+	KeyAnalysisChaining chainMidSquare2(50);
+	fileOut << "Current Size = 50, \n";
+	fileOut << "Load Factor, Collision Count, \n";
+	vector<Node * > chainMidSquarePrint2 = chainMidSquare2.GetPointsMidSquare();
+	for (size_t i = 0; i < chainMidSquarePrint2.size(); i++)
+	{
+		fileOut << chainMidSquarePrint2[i]->loadFactor << ", " << chainMidSquarePrint2[i]->collisionCount << ", \n";
+	}
+	fileOut << "\n";
+
+	KeyAnalysisChaining chainMidSquare3(97);
+	fileOut << "Current Size = 97, \n";
+	fileOut << "Load Factor, Collision Count, \n";
+	vector<Node * > chainMidSquarePrint3 = chainMidSquare3.GetPointsMidSquare();
+	for (size_t i = 0; i < chainMidSquarePrint3.size(); i++)
+	{
+		fileOut << chainMidSquarePrint3[i]->loadFactor << ", " << chainMidSquarePrint3[i]->collisionCount << ", \n";
+	}
+	fileOut << "\n";
+
+
+	// Third experiment with open adressing using Key Mod Hashing with sizes 10,50 and 97
+	KeyAnalysisOpenAdressing openAdressingKeyMod1(10);
+	fileOut << "Key Mod hashing with open adressing, \n" << "\n";
+	fileOut << "Current Size = 10, \n";
+	fileOut << "Load Factor, Collision Count, \n";
+	vector<Node * > openAdressingKeyModPrint1 = openAdressingKeyMod1.GetPointsKeyMod();
+	for (size_t i = 0; i < openAdressingKeyModPrint1.size(); i++)
+	{
+		fileOut << openAdressingKeyModPrint1[i]->loadFactor << ", " << openAdressingKeyModPrint1[i]->collisionCount << ", \n";
+	}
+	fileOut << "\n";
+
+	KeyAnalysisOpenAdressing openAdressingKeyMod2(50);
+	fileOut << "Current Size = 50, \n";
+	fileOut << "Load Factor, Collision Count, \n";
+	vector<Node * > openAdressingKeyModPrint2 = openAdressingKeyMod2.GetPointsKeyMod();
+	for (size_t i = 0; i < openAdressingKeyModPrint2.size(); i++)
+	{
+		fileOut << openAdressingKeyModPrint2[i]->loadFactor << ", " << openAdressingKeyModPrint2[i]->collisionCount << ", \n";
+	}
+	fileOut << "\n";
+
+	KeyAnalysisOpenAdressing openAdressingKeyMod3(97);
+	fileOut << "Current Size = 97, \n";
+	fileOut << "Load Factor, Collision Count, \n";
+	vector<Node * > openAdressingKeyModPrint3 = openAdressingKeyMod3.GetPointsKeyMod();
+	for (size_t i = 0; i < openAdressingKeyModPrint3.size(); i++)
+	{
+		fileOut << openAdressingKeyModPrint3[i]->loadFactor << ", " << openAdressingKeyModPrint3[i]->collisionCount << ", \n";
+	}
+	fileOut << "\n";
+
+	// Third experiment with open adressing using Mid Square Hashing with sizes 10,50 and 97
+	KeyAnalysisOpenAdressing openAdressingMidSquare1(10);
+	fileOut << "Mid Square hashing with open adressing, \n";
+	fileOut << "Current Size = 10, \n";
+	fileOut << "Load Factor, Collision Count, \n";
+	vector<Node * > openAdressingMidSquarePrint1 = openAdressingMidSquare1.GetPointsMidSquare();
+	for (size_t i = 0; i < openAdressingMidSquarePrint1.size(); i++)
+	{
+		fileOut << openAdressingMidSquarePrint1[i]->loadFactor << ", " << openAdressingMidSquarePrint1[i]->collisionCount << ", \n";
+	}
+	fileOut << "\n";
+
+	KeyAnalysisOpenAdressing openAdressingMidSquare2(50);
+	fileOut << "Current Size = 50, \n";
+	fileOut << "Load Factor, Collision Count, \n";
+	vector<Node * > openAdressingMidSquarePrint2 = openAdressingMidSquare2.GetPointsMidSquare();
+	for (size_t i = 0; i < openAdressingMidSquarePrint2.size(); i++)
+	{
+		fileOut << openAdressingMidSquarePrint2[i]->loadFactor << ", " << openAdressingMidSquarePrint2[i]->collisionCount << ", \n";
+	}
+	fileOut << "\n";
+
+	KeyAnalysisOpenAdressing openAdressingMidSquare3(97);
+	fileOut << "Current Size = 97, \n";
+	fileOut << "Load Factor, Collision Count, \n";
+	vector<Node * > openAdressingMidSquarePrint3 = openAdressingMidSquare3.GetPointsMidSquare();
+	for (size_t i = 0; i < openAdressingMidSquarePrint3.size(); i++)
+	{
+		fileOut << openAdressingMidSquarePrint3[i]->loadFactor << ", " << openAdressingMidSquarePrint3[i]->collisionCount << ", \n";
+	}
+	fileOut << "\n";
+
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
